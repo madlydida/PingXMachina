@@ -3,12 +3,14 @@ import os
 import random
 from tkinter import *
 from tkinter.filedialog import askopenfilename
+from tkinter import messagebox
 import datetime
 import openpyxl
 import pygubu
 from openpyxl.styles import Color, PatternFill, Font, Border
 from openpyxl.styles import colors
 from openpyxl.cell import Cell
+
 
 #GUI
 root= tk.Tk()
@@ -19,6 +21,15 @@ canvas1.pack()
 
 labelx = tk.Label(root, text= 'Select a list of machines/ip/ostnames by clicking \n-Run the Machine- \n , .txt file', fg='green', font=('helvetica', 8, 'bold'))
 canvas1.create_window(150, 50, window=labelx)
+
+
+#This block is for using sys.exit() when you click X to quit the app. (Fix for procces still running after exit)
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        root.destroy()
+        sys.exit()
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
 
 #Ping and write Results to xlsx file.
 def pingMachine():
@@ -60,7 +71,7 @@ def pingMachine():
     ws.column_dimensions["A"].width = 25.0
     wb.save("PingResults.xlsx")
 
-#Button
+#Button RUN THE MACHINE
 def hello():  
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     hello.filenameX = askopenfilename() # show an "Open" dialog box and return the path to the selected file
@@ -76,8 +87,10 @@ def hello():
     print (cwd)
 
     os.startfile('PingResults.xlsx')
+
     
 button1 = tk.Button(text='Run the Machine',command=hello, bg='brown',fg='white')
 canvas1.create_window(150, 150, window=button1)
+
 
 root.mainloop()
